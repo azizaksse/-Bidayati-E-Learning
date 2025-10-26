@@ -22,7 +22,7 @@ export function PopularCategories() {
   return (
     <motion.section
       id="categories"
-      className="relative mx-auto max-w-6xl px-6 py-24 text-[color:var(--color-foreground)]"
+      className="relative layout-container section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.15)}
@@ -55,7 +55,7 @@ export function PopularCategories() {
       </motion.div>
 
       <motion.div
-        className="relative mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+        className="relative mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         variants={createStagger(0.15)}
       >
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/80 to-transparent" />
@@ -86,7 +86,7 @@ export function PopularCategories() {
                 transition={{ duration: 0.3 }}
               >
                 <Link href="#courses">Read More</Link>
-                <span>→</span>
+                <span aria-hidden="true">&rarr;</span>
               </motion.div>
             </motion.article>
           );
@@ -110,4 +110,8 @@ export function PopularCategories() {
     </motion.section>
   );
 }
+
+
+
+
 

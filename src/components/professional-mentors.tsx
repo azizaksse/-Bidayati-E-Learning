@@ -9,7 +9,7 @@ export function ProfessionalMentors() {
   return (
     <motion.section
       id="mentors"
-      className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-6 py-24 text-[color:var(--color-foreground)]"
+      className="relative layout-container overflow-hidden rounded-[2.5rem] section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.15)}
@@ -33,7 +33,7 @@ export function ProfessionalMentors() {
         </motion.div>
         <motion.a
           href="#"
-          className="rounded-full border border-[rgba(40,16,178,0.25)] px-6 py-3 text-sm font-semibold text-[color:var(--color-primary)]"
+          className="touch-target rounded-full border border-[rgba(40,16,178,0.25)] px-6 py-3 text-sm font-semibold text-[color:var(--color-primary)]"
           whileHover={{ scale: 1.05, translateY: -4 }}
           whileTap={{ scale: 0.94 }}
           transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
@@ -43,7 +43,7 @@ export function ProfessionalMentors() {
       </motion.div>
 
       <motion.div
-        className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+        className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
         variants={createStagger(0.15)}
       >
         {mentorCards.map((mentor, idx) => (

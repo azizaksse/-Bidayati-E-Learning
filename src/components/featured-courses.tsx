@@ -1,6 +1,11 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
@@ -9,6 +14,9 @@ import { createChildFade, createStagger, fadeInUp } from "@/lib/motion-presets";
 
 export function FeaturedCourses() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollStartRef = useRef(0);
 
   const scroll = useCallback((direction: "left" | "right") => {
     const container = scrollRef.current;
@@ -17,12 +25,46 @@ export function FeaturedCourses() {
     container.scrollBy({ left: scrollAmount, behavior: "smooth" });
   }, []);
 
+  const beginDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
+    const container = scrollRef.current;
+    if (!container) return;
+    isDraggingRef.current = true;
+    startXRef.current = event.clientX;
+    scrollStartRef.current = container.scrollLeft;
+    container.classList.add("cursor-grabbing");
+    container.classList.remove("cursor-grab");
+    container.setPointerCapture?.(event.pointerId);
+  }, []);
+
+  const moveDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    event.preventDefault();
+    const container = scrollRef.current;
+    if (!container) return;
+    const delta = event.clientX - startXRef.current;
+    container.scrollLeft = scrollStartRef.current - delta;
+  }, []);
+
+  const endDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    const container = scrollRef.current;
+    isDraggingRef.current = false;
+    if (container) {
+      container.classList.add("cursor-grab");
+      container.classList.remove("cursor-grabbing");
+      container.releasePointerCapture?.(event.pointerId);
+    }
+  }, []);
+
   const headerStagger = useMemo(() => createStagger(0.12), []);
 
   return (
     <motion.section
       id="courses"
-      className="mx-auto max-w-6xl px-6 pb-24 text-[color:var(--color-foreground)]"
+      className="layout-container section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.15)}
@@ -48,13 +90,13 @@ export function FeaturedCourses() {
         </motion.div>
 
         <motion.div
-          className="flex items-center gap-3"
+          className="hidden items-center gap-3 sm:flex"
           variants={createChildFade(0.18)}
         >
           <motion.button
             type="button"
             onClick={() => scroll("left")}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[color:var(--color-primary)] shadow-md"
+            className="touch-target flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[color:var(--color-primary)] shadow-md"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             transition={{ duration: 0.25 }}
@@ -78,14 +120,19 @@ export function FeaturedCourses() {
 
       <motion.div
         ref={scrollRef}
-        className="edge-fade mt-12 flex snap-x gap-6 overflow-x-auto pb-4 pr-4 [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="edge-fade mt-12 flex snap-x gap-6 overflow-x-auto pb-4 pr-4 [scrollbar-width:none] [-ms-overflow-style:none] md:cursor-grab"
+        onPointerDown={beginDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        onPointerCancel={endDrag}
         variants={createStagger(0.12)}
       >
         {courseCards.map((course, idx) => (
           <motion.article
             key={course.title}
             variants={createChildFade(0.08 + idx * 0.1)}
-            className="relative min-w-[280px] max-w-[320px] snap-start overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/80 shadow-[0_20px_45px_rgba(40,16,178,0.12)]"
+            className="relative min-w-[80%] max-w-full snap-start overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/80 shadow-[0_20px_45px_rgba(40,16,178,0.12)] sm:min-w-[60%] md:min-w-[48%] lg:min-w-[32%] xl:min-w-[25%]"
             whileHover={{ scale: 1.05, translateY: -10 }}
             transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
             style={{ willChange: "transform" }}

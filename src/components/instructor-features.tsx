@@ -29,7 +29,7 @@ export function InstructorSection() {
     <motion.section
       ref={sectionRef}
       id="features"
-      className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] px-6 py-24 text-[color:var(--color-foreground)]"
+      className="relative layout-container overflow-hidden rounded-[2.5rem] section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.18)}

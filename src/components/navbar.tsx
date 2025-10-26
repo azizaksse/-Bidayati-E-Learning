@@ -23,14 +23,27 @@ export function Navbar() {
     document.body.style.overflow = open ? "hidden" : "";
   }, [open]);
 
+  useEffect(() => {
+    const closeOnResize = () => {
+      if (window.innerWidth >= 1024 && open) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("resize", closeOnResize);
+    return () => window.removeEventListener("resize", closeOnResize);
+  }, [open]);
+
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        isScrolled ? "shadow-lg bg-white/80 backdrop-blur-lg" : "bg-transparent"
-      }`}
-      style={{ height: NAVBAR_HEIGHT }}
-    >
-      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+          isScrolled
+            ? "bg-white/90 shadow-lg backdrop-blur-lg"
+            : "bg-transparent"
+        }`}
+        style={{ height: NAVBAR_HEIGHT }}
+      >
+        <div className="layout-container flex h-full items-center justify-between">
         <Link
           href="#home"
           className="flex items-center gap-3 text-lg font-semibold text-[color:var(--color-foreground)]"
@@ -55,7 +68,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-medium md:flex">
+        <nav className="hidden items-center gap-5 text-sm font-medium md:flex md:text-[15px] lg:gap-8 lg:text-base">
           {navigationItems.map((item) => (
             <Link
               key={item.label}
@@ -67,16 +80,16 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex md:text-sm lg:gap-3 lg:text-base">
           <Link
             href="#signin"
-            className="rounded-full border border-[rgba(40,16,178,0.2)] px-5 py-2.5 text-sm font-medium text-[color:var(--color-primary)] transition hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary-dark)]"
+            className="rounded-full border border-[rgba(40,16,178,0.2)] px-4 py-2 text-sm font-medium text-[color:var(--color-primary)] transition hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary-dark)] lg:px-5 lg:py-2.5"
           >
             Sign In
           </Link>
           <Link
             href="#register"
-            className="rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-6 py-2.5 text-sm font-semibold text-white shadow-[0_20px_40px_rgba(40,16,178,0.18)] transition hover:brightness-110"
+            className="rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-5 py-2 text-sm font-semibold text-white shadow-[0_20px_40px_rgba(40,16,178,0.18)] transition hover:brightness-110 lg:px-6 lg:py-2.5"
           >
             Register
           </Link>
@@ -94,40 +107,52 @@ export function Navbar() {
             <Menu className="h-6 w-6 text-[color:var(--color-primary)]" />
           )}
         </button>
-
-        {open ? (
-          <div className="absolute inset-x-6 top-[calc(100%+1rem)] rounded-3xl border border-white/60 bg-white/95 px-6 py-8 shadow-[0_24px_55px_rgba(40,16,178,0.2)] md:hidden">
-            <nav className="flex flex-col gap-4 text-base font-medium text-[color:var(--color-foreground)]">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-2 py-3 transition hover:bg-[#e5f7ff]/70"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-6 flex flex-col gap-3">
-              <Link
-                href="#signin"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-[rgba(40,16,178,0.2)] px-5 py-3 text-center text-sm font-medium text-[color:var(--color-primary)] transition hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary-dark)]"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="#register"
-                onClick={() => setOpen(false)}
-                className="rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-6 py-3 text-center text-sm font-semibold text-white shadow-[0_20px_40px_rgba(40,16,178,0.2)] transition hover:brightness-110"
-              >
-                Register
-              </Link>
-            </div>
-          </div>
-        ) : null}
       </div>
-    </header>
+      </header>
+
+      <div
+        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      <aside
+        className={`fixed inset-y-0 right-0 z-50 flex w-[min(320px,85vw)] flex-col gap-6 overflow-y-auto bg-white px-6 pb-10 pt-24 shadow-[0_32px_80px_rgba(40,16,178,0.24)] transition-transform duration-300 md:hidden ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+        aria-hidden={!open}
+      >
+        <nav className="flex flex-col gap-2 text-base font-medium text-[color:var(--color-foreground)]">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="rounded-2xl px-4 py-3 transition hover:bg-[#e5f7ff]/80"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="flex flex-col gap-3">
+          <Link
+            href="#signin"
+            onClick={() => setOpen(false)}
+            className="touch-target rounded-full border border-[rgba(40,16,178,0.2)] px-5 text-center text-sm font-medium text-[color:var(--color-primary)] transition hover:border-[color:var(--color-primary)] hover:text-[color:var(--color-primary-dark)]"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="#register"
+            onClick={() => setOpen(false)}
+            className="touch-target rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-5 text-center text-sm font-semibold text-white shadow-[0_20px_40px_rgba(40,16,178,0.2)] transition hover:brightness-110"
+          >
+            Register
+          </Link>
+        </div>
+      </aside>
+    </>
   );
 }

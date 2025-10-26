@@ -16,7 +16,7 @@ export function FaqSection() {
   return (
     <motion.section
       id="faq"
-      className="mx-auto max-w-6xl px-6 pb-24 text-[color:var(--color-foreground)]"
+      className="layout-container section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.15)}
@@ -59,7 +59,7 @@ export function FaqSection() {
               <button
                 type="button"
                 onClick={() => toggle(index)}
-                className="flex w-full items-center justify-between gap-6 px-6 py-5 text-left transition hover:text-[color:var(--color-primary)]"
+                className="touch-target flex w-full items-center justify-between gap-6 px-6 py-5 text-left transition hover:text-[color:var(--color-primary)]"
               >
                 <span className="text-base font-semibold sm:text-lg">
                   {item.question}

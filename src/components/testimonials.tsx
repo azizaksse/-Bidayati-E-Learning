@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
@@ -9,19 +9,37 @@ import { createChildFade, createStagger, fadeInUp } from "@/lib/motion-presets";
 
 export function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    setActiveIndex((prev) => {
+      const nextIndex = prev === 0 ? testimonials.length - 1 : prev - 1;
+      cardRefs.current[nextIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+      return nextIndex;
+    });
   };
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+    setActiveIndex((prev) => {
+      const nextIndex = prev === testimonials.length - 1 ? 0 : prev + 1;
+      cardRefs.current[nextIndex]?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+      return nextIndex;
+    });
   };
 
   return (
     <motion.section
       id="testimonials"
-      className="mx-auto max-w-6xl px-6 py-24 text-[color:var(--color-foreground)]"
+      className="layout-container section-spacing text-[color:var(--color-foreground)]"
       initial="hidden"
       whileInView="visible"
       variants={createStagger(0.15)}
@@ -40,13 +58,13 @@ export function TestimonialsSection() {
           </h2>
         </motion.div>
         <motion.div
-          className="flex items-center gap-3"
+          className="hidden items-center gap-3 md:flex"
           variants={createChildFade(0.12)}
         >
           <motion.button
             type="button"
             onClick={handlePrev}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[color:var(--color-primary)] shadow-md"
+            className="touch-target flex h-11 w-11 items-center justify-center rounded-full border border-white/80 bg-white/70 text-[color:var(--color-primary)] shadow-md"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             transition={{ duration: 0.25 }}
@@ -69,7 +87,8 @@ export function TestimonialsSection() {
       </motion.div>
 
       <motion.div
-        className="relative mt-16 grid gap-6 md:grid-cols-3"
+        ref={containerRef}
+        className="relative mt-16 flex snap-x gap-6 overflow-x-auto pb-4 pr-4 [scrollbar-width:none] [-ms-overflow-style:none] md:grid md:snap-none md:overflow-visible md:pb-0 md:pr-0 md:grid-cols-2 lg:grid-cols-3"
         variants={createStagger(0.14)}
       >
         {testimonials.map((testimonial, index) => {
@@ -77,8 +96,12 @@ export function TestimonialsSection() {
           return (
             <motion.article
               key={testimonial.name}
+              ref={(element) => {
+                cardRefs.current[index] =
+                  element instanceof HTMLDivElement ? element : null;
+              }}
               variants={createChildFade(0.1 + index * 0.1)}
-              className={`relative overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/85 p-6 shadow-[0_20px_45px_rgba(40,16,178,0.12)] ${
+              className={`relative min-w-[85%] snap-start overflow-hidden rounded-[1.75rem] border border-white/70 bg-white/85 p-6 shadow-[0_20px_45px_rgba(40,16,178,0.12)] md:min-w-0 ${
                 isActive
                   ? "md:border-[color:var(--color-primary)] md:shadow-[0_28px_65px_rgba(40,16,178,0.18)]"
                   : ""
@@ -118,7 +141,7 @@ export function TestimonialsSection() {
                 <motion.button
                   type="button"
                   onClick={handlePrev}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md md:hidden"
+                  className="touch-target flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md md:hidden"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}
@@ -129,7 +152,7 @@ export function TestimonialsSection() {
                 <motion.button
                   type="button"
                   onClick={handleNext}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md md:hidden"
+                  className="touch-target flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md md:hidden"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}

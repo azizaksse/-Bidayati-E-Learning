@@ -25,7 +25,7 @@ export function Footer() {
       id="contact"
       className="mt-24 border-t border-white/40 bg-white/80 py-16 text-[color:var(--color-foreground)]"
     >
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[1.1fr_1fr_1fr_1.2fr]">
+      <div className="layout-container grid gap-10 md:grid-cols-[1.1fr_1fr_1fr_1.2fr]">
         <div>
           <div className="flex items-center gap-3">
             <span className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl bg-[#dce3ff]">
@@ -73,7 +73,7 @@ export function Footer() {
                 aria-label={label}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md transition hover:scale-105 hover:border-[color:var(--color-primary)]"
+                className="touch-target flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/80 text-[color:var(--color-primary)] shadow-md transition hover:scale-105 hover:border-[color:var(--color-primary)]"
               >
                 <Icon className="h-5 w-5" />
               </Link>
@@ -150,7 +150,7 @@ export function Footer() {
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-6 py-3 text-sm font-semibold text-white shadow-[0_24px_45px_rgba(40,16,178,0.2)] transition hover:brightness-110"
+              className="inline-flex touch-target items-center justify-center rounded-full bg-gradient-to-r from-[#2810b2] via-[#49b3e1] to-[#84efc7] px-6 py-3 text-sm font-semibold text-white shadow-[0_24px_45px_rgba(40,16,178,0.2)] transition hover:brightness-110"
             >
               Subscribe
             </button>
@@ -158,7 +158,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-6xl flex-col items-center justify-between gap-4 border-t border-white/40 pt-6 text-xs text-[color:var(--color-muted)] md:flex-row">
+      <div className="layout-container mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/40 pt-6 text-xs text-[color:var(--color-muted)] md:flex-row">
         <p>Copyright {new Date().getFullYear()} Bidayati. All rights reserved.</p>
         <div className="flex items-center gap-5">
           <Link
